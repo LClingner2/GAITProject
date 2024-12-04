@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Fitness Trainer</title>
+</head>
+<body>
+    <h1>Get Your Personalized Workout Plan</h1>
+    <form method="POST">
+        <label for="goal">Fitness Goal:</label>
+        <input type="text" id="goal" name="goal" required><br><br>
+
+        <label for="fitness_level">Fitness Level:</label>
+        <select id="fitness_level" name="fitness_level">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        </select><br><br>
+
+        <button type="submit">Generate Workout Plan</button>
+    </form>
+
+    {% if workout_plan %}
+    <h2>Your Personalized Workout Plan:</h2>
+    <p>{{ workout_plan }}</p>
+    {% endif %}
+</body>
+</html>
