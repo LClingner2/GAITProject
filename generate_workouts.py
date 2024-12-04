@@ -23,7 +23,7 @@ def generate_workout(goal, fitness_level):
 if __name__ == "__main__":
     # Example usage
     user_goal = "build muscle"
-    user_fitness_level = "beginner"
+    user_fitness_level = "Beginner"
     workout_plan = generate_workout(user_goal, user_fitness_level)
     print("Generated Workout Plan:")
     print(workout_plan)
