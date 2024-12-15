@@ -27,6 +27,24 @@
             margin: 0.5rem 0;
             line-height: 1.5;
         }
+        .wipe-button {
+            background-color: red;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+        .tts-button {
+            background-color: #007bff;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +71,24 @@
         <button type="submit">Generate Workout Plan</button>
     </form>
 
+    <form action="{{ url_for('wipe_database') }}" method="POST">
+        <button type="submit" class="wipe-button">Wipe Database</button>
+    </form>
+
+    <button class="tts-button" onclick="playMotivationalQuote()">Get Motivated!</button>
+
+    {% if saved_weeks %}
+        <h2>View Saved Weeks:</h2>
+        <form method="GET" action="{{ url_for('view_week') }}">
+            <select name="week">
+                {% for week in saved_weeks %}
+                    <option value="{{ week }}">{{ week }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">View Week</button>
+        </form>
+    {% endif %}
+
     {% if daily_workouts %}
         <h2>Your Personalized {{ selected_week }} Workout Plan:</h2>
         {% for day in daily_workouts %}
@@ -67,5 +103,30 @@
             </div>
         {% endfor %}
     {% endif %}
+
+    <script>
+        function playMotivationalQuote() {
+            const quotes = [
+                "You are stronger than you think. Keep pushing!",
+                "Every workout counts. Give it your all!",
+                "Success starts with self-discipline.",
+                "Don't limit your challenges. Challenge your limits!",
+                "Believe in yourself and all that you are.",
+                "The pain you feel today will be the strength you feel tomorrow."
+            ];
+
+            // Select a random quote
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            // Use the Web Speech API for text-to-speech
+            const utterance = new SpeechSynthesisUtterance(randomQuote);
+            utterance.lang = 'en-US';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+
+            // Speak the quote
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
 </body>
 </html>
