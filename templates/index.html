@@ -3,7 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Fitness Trainer</title>
+    <title>Personalized Workout Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+        h1 {
+            color: #333;
+        }
+        .workout-day {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .workout-day h2 {
+            margin-top: 0;
+            color: #555;
+        }
+        .workout-day p {
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
     <h1>Get Your Personalized Workout Plan</h1>
@@ -18,12 +42,30 @@
             <option value="advanced">Advanced</option>
         </select><br><br>
 
+        <label for="week">Select Week:</label>
+        <select id="week" name="week">
+            <option value="Week 1">Week 1</option>
+            <option value="Week 2">Week 2</option>
+            <option value="Week 3">Week 3</option>
+            <option value="Week 4">Week 4</option>
+        </select><br><br>
+
         <button type="submit">Generate Workout Plan</button>
     </form>
 
-    {% if workout_plan %}
-    <h2>Your Personalized Workout Plan:</h2>
-    <p>{{ workout_plan }}</p>
+    {% if daily_workouts %}
+        <h2>Your Personalized {{ selected_week }} Workout Plan:</h2>
+        {% for day in daily_workouts %}
+            <div class="workout-day">
+                <h2>{{ day.split(':')[0] }}</h2>
+                {% set day_content = day.split(':', 1)[1] %}
+                {% for line in day_content.splitlines() %}
+                    {% if line.strip() %}
+                        <p>{{ line.strip() }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
     {% endif %}
 </body>
 </html>
