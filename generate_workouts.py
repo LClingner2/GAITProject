@@ -1,7 +1,11 @@
 import openai
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Set your OpenAI API key here
-openai.api_key = "YOUR_OPENAI_API_KEY"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_workout(goal, fitness_level):
     # Construct a prompt for generating workouts based on user's goals and fitness level
