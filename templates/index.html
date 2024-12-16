@@ -52,6 +52,9 @@
             cursor: pointer;
             margin-top: 1rem;
         }
+        .voice-select {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -82,23 +85,16 @@
         <button type="submit" class="wipe-button">Wipe Database</button>
     </form>
 
+    <div class="voice-select">
+        <label for="voices">Select Voice:</label>
+        <select id="voices"></select>
+    </div>
+
     <button class="tts-button" onclick="playMotivationalQuote()">Get Motivated!</button>
 
-    {% if saved_weeks %}
-        <h2>View Saved Weeks:</h2>
-        <form method="GET" action="{{ url_for('view_week') }}">
-            <select name="week">
-                {% for week in saved_weeks %}
-                    <option value="{{ week }}">{{ week }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">View Week</button>
-        </form>
-    {% endif %}
-
-    {% if daily_workouts %}
+    {% if zipped_data %}
         <h2>Your Personalized {{ selected_week }} Workout Plan:</h2>
-        {% for day in daily_workouts %}
+        {% for day, image_path in zipped_data %}
             <div class="workout-day">
                 <h2>{{ day.split(':')[0] }}</h2>
                 {% set day_content = day.split(':', 1)[1] %}
@@ -107,12 +103,32 @@
                         <p>{{ line.strip() }}</p>
                     {% endif %}
                 {% endfor %}
-                <img src="{{ url_for('static', filename='images/' + loop.index|string + '.jpg') }}" alt="Workout Image">
+                {% if image_path %}
+                    <img src="{{ image_path }}" alt="Workout Image">
+                {% endif %}
             </div>
         {% endfor %}
     {% endif %}
 
     <script>
+        // Populate the voice dropdown with available voices
+        function populateVoiceList() {
+            const voiceSelect = document.getElementById("voices");
+            const voices = window.speechSynthesis.getVoices();
+
+            voiceSelect.innerHTML = "";
+            voices.forEach((voice, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        // Populate the voices when they are loaded
+        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        populateVoiceList();
+
         function playMotivationalQuote() {
             const quotes = [
                 "You are stronger than you think. Keep pushing!",
@@ -126,8 +142,15 @@
             // Select a random quote
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
-            // Use the Web Speech API for text-to-speech
+            // Create a new SpeechSynthesisUtterance
             const utterance = new SpeechSynthesisUtterance(randomQuote);
+
+            // Get the selected voice
+            const voiceSelect = document.getElementById("voices");
+            const voices = window.speechSynthesis.getVoices();
+            utterance.voice = voices[voiceSelect.value];
+
+            // Set other properties
             utterance.lang = 'en-US';
             utterance.rate = 1.0;
             utterance.pitch = 1.0;
